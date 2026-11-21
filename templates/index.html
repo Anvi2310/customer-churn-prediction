@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <title>Customer Churn Prediction - Ultimate Stylish UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  
+  <style>
+    :root {
+      --bg-dark: #121417;
+      --form-bg: rgba(31,32,47,0.9);
+      --form-border: rgba(105, 118, 196, 0.35);
+      --accent-color: #5c7cfa;
+      --accent-hover: #4361ee;
+      --text-primary: #e9ebf4;
+      --text-muted: #a0a3b7;
+      --input-bg: #2c303b;
+      --input-border: #3a3d4d;
+      --shadow-color: rgba(92, 124, 250, 0.35);
+      --side-shape-color1: rgba(92, 124, 250, 0.15);
+      --side-shape-color2: rgba(67, 97, 238, 0.12);
+    }
+
+    /* Body and base styles */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 40px;
+      scroll-behavior: smooth;
+    }
+
+    /* Side decorative panels */
+    .side-panel {
+      position: fixed;
+      top: 0;
+      width: 120px;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 60px;
+      opacity: 0.55;
+      transition: opacity 0.4s ease;
+      user-select: none;
+    }
+    .side-panel.left {
+      left: 0;
+      background: linear-gradient(90deg, var(--side-shape-color1) 0%, transparent 100%);
+      padding-top: 100px;
+      box-shadow: inset -6px 0 14px rgba(92,124,250,0.15);
+    }
+    .side-panel.right {
+      right: 0;
+      background: linear-gradient(270deg, var(--side-shape-color2) 0%, transparent 100%);
+      padding-top: 120px;
+      box-shadow: inset 6px 0 14px rgba(67,97,238,0.10);
+    }
+
+    /* Side polygon shapes */
+    .side-shape {
+      width: 96px;
+      height: 96px;
+      clip-path: polygon(
+        50% 0%,
+        85% 15%,
+        85% 50%,
+        50% 100%,
+        15% 50%,
+        15% 15%
+      );
+      background: transparent;
+      opacity: 0.3;
+      transform-origin: center;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+      filter: drop-shadow(0 0 3px rgba(92,124,250,0.25));
+      transition: opacity 0.4s ease;
+    }
+    .left .side-shape:nth-child(1) {
+      background: #5477f5;
+      animation-name: pulseGlowA;
+      animation-duration: 6s;
+    }
+    .left .side-shape:nth-child(2) {
+      background: #8c98fb;
+      animation-name: floatUpDown;
+      animation-duration: 11s;
+      animation-delay: 2s;
+    }
+    .left .side-shape:nth-child(3) {
+      background: #5477f5;
+      animation-name: floatDownUp;
+      animation-duration: 9s;
+      animation-delay: 5s;
+    }
+    .right .side-shape:nth-child(1) {
+      background: #4361ee;
+      animation-name: floatDownUp;
+      animation-duration: 8s;
+    }
+    .right .side-shape:nth-child(2) {
+      background: #7194ff;
+      animation-name: pulseGlowB;
+      animation-duration: 7.5s;
+      animation-delay: 3s;
+    }
+    .right .side-shape:nth-child(3) {
+      background: #4361ee;
+      animation-name: floatUpDown;
+      animation-duration: 10s;
+      animation-delay: 6s;
+    }
+
+    @keyframes pulseGlowA {
+      0%, 100% { filter: drop-shadow(0 0 6px #5477f5); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 18px #8c98fb); transform: scale(1.15); }
+    }
+    @keyframes pulseGlowB {
+      0%, 100% { filter: drop-shadow(0 0 5px #4361ee); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 20px #7194ff); transform: scale(1.22); }
+    }
+    @keyframes floatUpDown {
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+      50% { transform: translateY(-14px) rotate(12deg) scale(1.08); }
+    }
+    @keyframes floatDownUp {
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+      50% { transform: translateY(10px) rotate(-9deg) scale(1.05); }
+    }
+
+    /* Fade side panels on scroll for mobile */
+    @media (max-width: 1024px) {
+      body.scrolled .side-panel {
+        opacity: 0.15;
+      }
+      body.scrolled .field-hoverable {
+        background-color: #1d253f44 !important;
+        box-shadow: 0 6px 20px rgba(67,97,238,0.10) !important;
+      }
+    }
+    @media (max-width: 768px) {
+      .side-panel {
+        display: none;
+      }
+      body {
+        padding: 3rem 1.5rem;
+      }
+    }
+
+    /* Background blobs for smooth running 3D animation */
+    .bg-animation {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.3;
+      mix-blend-mode: screen;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+    .blob1 {
+      background: #5c7cfa;
+      width: 350px;
+      height: 350px;
+      top: 10%;
+      left: 20%;
+      animation-name: floatX;
+      animation-duration: 15s;
+      animation-delay: 0s;
+    }
+    .blob2 {
+      background: #4361ee;
+      width: 280px;
+      height: 280px;
+      top: 70%;
+      left: 15%;
+      animation-name: floatY;
+      animation-duration: 18s;
+      animation-delay: 5s;
+    }
+    .blob3 {
+      background: #7b57e7;
+      width: 300px;
+      height: 300px;
+      top: 60%;
+      right: 18%;
+      animation-name: floatX;
+      animation-duration: 20s;
+      animation-delay: 9s;
+      opacity: 0.25;
+    }
+    .blob4 {
+      background: #8f94fb;
+      width: 250px;
+      height: 250px;
+      top: 25%;
+      right: 22%;
+      animation-name: floatY;
+      animation-duration: 22s;
+      animation-delay: 14s;
+      opacity: 0.35;
+    }
+    @keyframes floatX {
+      0% { transform: translateX(0) translateZ(0); }
+      100% { transform: translateX(30px) translateZ(10px); }
+    }
+    @keyframes floatY {
+      0% { transform: translateY(0) translateZ(0); }
+      100% { transform: translateY(30px) translateZ(10px); }
+    }
+
+    /* The main form card */
+    .card {
+      background: var(--form-bg);
+      backdrop-filter: saturate(180%) blur(14px);
+      border: 1.8px solid var(--form-border);
+      border-radius: 1.15rem;
+      box-shadow:
+        inset 0 0 18px #5c7cfa44,
+        0 20px 48px var(--shadow-color);
+      max-width: 780px;
+      width: 100%;
+      padding: 3.5rem 4rem 3.5rem 4rem;
+      transition: box-shadow 0.35s ease, transform 0.4s ease;
+      z-index: 1;
+    }
+    .card:hover {
+      box-shadow:
+        inset 0 0 25px #4361ee99,
+        0 24px 82px rgba(92, 124, 250, 0.85);
+      transform: translateY(-6px);
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 2.75rem;
+      color: var(--accent-color);
+      text-align: center;
+      letter-spacing: 1.15px;
+      margin-bottom: 0.7rem;
+      user-select: text;
+      text-shadow: 0 0 14px #7194ffbb;
+      transition: color 0.3s ease;
+    }
+    h1:hover {
+      color: #7194ff;
+      text-shadow: 0 0 26px #5c7cfaee;
+      cursor: default;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 1.15rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      letter-spacing: 0.01em;
+    }
+
+    form {
+      user-select: auto;
+    }
+
+    /* Form grid layout with spacing */
+    .row > div {
+      margin-bottom: 1.6rem;
+      border-radius: 0.95rem;
+      padding: 0.42rem 1rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+    .field-hoverable:hover {
+      background-color: rgba(92, 124, 250, 0.14);
+      box-shadow: 0 10px 28px 5px rgba(92, 124, 250, 0.3);
+      cursor: pointer;
+      border-radius: 0.95rem;
+    }
+
+    label.form-label {
+      font-weight: 700;
+      margin-bottom: 0.65rem;
+      color: var(--text-primary);
+      transition: color 0.35s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    label.form-label:hover {
+      color: var(--accent-hover);
+    }
+
+    input.form-control,
+    select.form-select {
+      background: var(--input-bg);
+      border: 1.75px solid var(--input-border);
+      border-radius: 0.85rem;
+      color: var(--text-primary);
+      padding: 0.6rem 1.1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      box-shadow: inset 0 0 11px 0 #182a5f77;
+      letter-spacing: 0.02em;
+      outline-offset: 3px;
+      transition:
+        border-color 0.35s ease,
+        box-shadow 0.35s ease,
+        background-color 0.35s ease,
+        color 0.35s ease;
+      user-select: text;
+    }
+    input.form-control::placeholder {
+      color: #7a82a2;
+      font-weight: 400;
+      user-select: text;
+    }
+    input.form-control:focus,
+    select.form-select:focus {
+      border-color: var(--accent-color);
+      box-shadow:
+        0 0 20px 8px var(--accent-color),
+        inset 0 0 18px 5px #5c7cfaaa;
+      background: #1f2448;
+      color: var(--text-primary);
+      outline: none;
+      user-select: text;
+    }
+    select.form-select {
+      height: 44px;
+    }
+
+    /* Submit button */
+    button.btn-primary {
+      background-color: var(--accent-color);
+      border: none;
+      padding: 0.85rem 0;
+      border-radius: 1rem;
+      font-weight: 700;
+      font-size: 1.28rem;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.22s ease;
+      box-shadow: 0 10px 38px rgba(92, 124, 250, 0.45);
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      user-select: none;
+    }
+    button.btn-primary:hover,
+    button.btn-primary:focus {
+      background-color: var(--accent-hover);
+      box-shadow: 0 20px 58px rgba(67, 97, 238, 0.85);
+      transform: scale(1.09) translateY(-3px);
+      outline: none;
+      user-select: none;
+    }
+    button.btn-primary i {
+      font-size: 1.5rem;
+      line-height: 1;
+      transition: transform 0.38s ease;
+      user-select: none;
+    }
+    button.btn-primary:hover i {
+      transform: translateX(6px);
+      user-select: none;
+    }
+
+    /* Prediction result style */
+    .result-box {
+      margin-top: 3.25rem;
+      background: #283150;
+      border-radius: 1.15rem;
+      padding: 1.5rem 2.1rem;
+      font-weight: 800;
+      font-size: 1.38rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.4rem;
+      user-select: none;
+      box-shadow: 0 15px 68px rgba(92,124,250,0.3);
+      transition: background-color 0.6s ease, box-shadow 0.6s ease, color 0.6s ease;
+      animation: fadeInScale 0.6s ease forwards;
+    }
+    .result-box.positive {
+      background: #19462c;
+      color: #7fffbb;
+      box-shadow: 0 15px 70px #7fffbb71;
+      border-left: 8px solid #39d774;
+    }
+    .result-box.negative {
+      background: #4f2628;
+      color: #ff8080;
+      box-shadow: 0 15px 70px #ff80805a;
+      border-left: 8px solid #ea4335;
+    }
+    .result-icon {
+      font-size: 2.3rem;
+      user-select: none;
+      filter: drop-shadow(0 0 5px #221);
+    }
+
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.93);}
+      to { opacity: 1; transform: scale(1);}
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      body {
+        padding: 3rem 24px;
+      }
+      .card {
+        padding: 3rem 3rem 3rem 3rem;
+      }
+      .side-panel {
+        opacity: 0.15;
+      }
+    }
+    @media (max-width: 768px) {
+      body {
+        padding: 2.5rem 24px;
+      }
+      .card {
+        padding: 2.5rem 2.4rem 2.5rem 2.4rem;
+        margin: 0;
+        max-width: 100%;
+      }
+      .side-panel {
+        display: none;
+      }
+    }
+    @media (max-width: 480px) {
+      body {
+        padding: 2rem 16px;
+      }
+      h1 {
+        font-size: 2.15rem;
+      }
+      .subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+      }
+      button.btn-primary {
+        font-size: 1.15rem;
+        padding: 0.7rem 0;
+        gap: 0.65rem;
+      }
+      .result-box {
+        font-size: 1.15rem;
+        padding: 1rem 1.4rem;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Side shapes for left and right fill -->
+  <div class="side-panel left" aria-hidden="true">
+    <div class="side-shape"></div>
+    <div class="side-shape"></div>
+    <div class="side-shape"></div>
+  </div>
+  <div class="side-panel right" aria-hidden="true">
+    <div class="side-shape"></div>
+    <div class="side-shape"></div>
+    <div class="side-shape"></div>
+  </div>
+
+  <!-- Background blobs for smooth running 3D animation -->
+  <div class="bg-animation" aria-hidden="true">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+    <div class="blob blob4"></div>
+  </div>
+
+  <main class="card shadow" role="main" aria-label="Customer churn prediction form">
+    <h1>Customer Churn Prediction</h1>
+    <p class="subtitle">Enter customer details below to predict churn</p>
+
+    <form action="/predict" method="post">
+      <div class="row">
+
+        <div class="col-md-6 field-hoverable">
+          <label for="gender" class="form-label">Gender</label>
+          <select name="gender" id="gender" class="form-select" required>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="SeniorCitizen" class="form-label">Senior Citizen</label>
+          <select name="SeniorCitizen" id="SeniorCitizen" class="form-select" required>
+            <option>0</option>
+            <option>1</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="Partner" class="form-label">Partner</label>
+          <select name="Partner" id="Partner" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="Dependents" class="form-label">Dependents</label>
+          <select name="Dependents" id="Dependents" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="tenure" class="form-label">Tenure (months)</label>
+          <input type="number" name="tenure" id="tenure" class="form-control" min="0" required />
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="PhoneService" class="form-label">Phone Service</label>
+          <select name="PhoneService" id="PhoneService" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="MultipleLines" class="form-label">Multiple Lines</label>
+          <select name="MultipleLines" id="MultipleLines" class="form-select" required>
+            <option>No phone service</option>
+            <option>No</option>
+            <option>Yes</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="InternetService" class="form-label">Internet Service</label>
+          <select name="InternetService" id="InternetService" class="form-select" required>
+            <option>DSL</option>
+            <option>Fiber optic</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="OnlineSecurity" class="form-label">Online Security</label>
+          <select name="OnlineSecurity" id="OnlineSecurity" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="OnlineBackup" class="form-label">Online Backup</label>
+          <select name="OnlineBackup" id="OnlineBackup" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="DeviceProtection" class="form-label">Device Protection</label>
+          <select name="DeviceProtection" id="DeviceProtection" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="TechSupport" class="form-label">Tech Support</label>
+          <select name="TechSupport" id="TechSupport" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="StreamingTV" class="form-label">Streaming TV</label>
+          <select name="StreamingTV" id="StreamingTV" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="StreamingMovies" class="form-label">Streaming Movies</label>
+          <select name="StreamingMovies" id="StreamingMovies" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+            <option>No internet service</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="Contract" class="form-label">Contract</label>
+          <select name="Contract" id="Contract" class="form-select" required>
+            <option>Month-to-month</option>
+            <option>One year</option>
+            <option>Two year</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="PaperlessBilling" class="form-label">Paperless Billing</label>
+          <select name="PaperlessBilling" id="PaperlessBilling" class="form-select" required>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+
+        <div class="col-12 field-hoverable">
+          <label for="PaymentMethod" class="form-label">Payment Method</label>
+          <select name="PaymentMethod" id="PaymentMethod" class="form-select" required>
+            <option>Electronic check</option>
+            <option>Mailed check</option>
+            <option>Bank transfer (automatic)</option>
+            <option>Credit card (automatic)</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="MonthlyCharges" class="form-label">Monthly Charges</label>
+          <input type="number" name="MonthlyCharges" id="MonthlyCharges" class="form-control" step="0.01" required />
+        </div>
+
+        <div class="col-md-6 field-hoverable">
+          <label for="TotalCharges" class="form-label">Total Charges</label>
+          <input type="number" name="TotalCharges" id="TotalCharges" class="form-control" step="0.01" required />
+        </div>
+
+        <div class="col-12 d-grid">
+          <button type="submit" class="btn btn-primary" aria-label="Predict Customer Churn">
+            <i class="bi bi-graph-up-arrow"></i> Predict
+          </button>
+        </div>
+      </div>
+    </form>
+    
+    {% if prediction_text %}
+      <div
+        class="result-box {% if 'No' in prediction_text %}positive{% else %}negative{% endif %}"
+        role="alert"
+        aria-live="polite"
+      >
+        {% if 'No' in prediction_text %}
+          <i class="bi bi-check-lg result-icon"></i>
+        {% else %}
+          <i class="bi bi-x-lg result-icon"></i>
+        {% endif %}
+        {{ prediction_text }}
+      </div>
+    {% endif %}
+  </main>
+
+</body>
+</html>
