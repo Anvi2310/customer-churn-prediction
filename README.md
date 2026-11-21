@@ -1,5 +1,9 @@
 # Customer Churn Prediction
 
+**Live demo:** https://customer-churn-prediction-49wb.onrender.com/
+
+> Hosted on Render's free plan: if the site has been idle, the first load can take up to a minute while it wakes up.
+
 Predicts whether a telecom customer is likely to churn (cancel their service), using a Random Forest classifier trained on the IBM Telco Customer Churn dataset. Predictions are served through a Flask web app: enter a customer's details in the form and it shows whether they are likely to churn or stay.
 
 ## Dataset
@@ -71,7 +75,7 @@ Open http://127.0.0.1:5001 in your browser.
 
 ## Deployment
 
-The app is set up for [Render](https://render.com) as a Python web service:
+The app is deployed on [Render](https://render.com) as a Python web service at https://customer-churn-prediction-49wb.onrender.com/
 
 - **Build command:** `pip install -r requirements.txt`
 - **Start command:** `gunicorn app:app`
